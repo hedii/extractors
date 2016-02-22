@@ -2,7 +2,7 @@
 
 # Extractors
 
-Extractor is a package that find a targeted resource in html dom.
+Extractor is a package that find targeted types of resources in html dom.
 
 ### Install
 

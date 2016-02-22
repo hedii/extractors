@@ -1,7 +1,7 @@
 {
     "name": "hedii/extractors",
     "type": "library",
-    "description": "A php package to extract different types of resources",
+    "description": "Extractor is a package that find targeted types of resources in html dom.",
     "keywords": [
         "hedii",
         "extractors"
