@@ -1,0 +1,39 @@
+{
+    "name": "hedii/extractors",
+    "type": "library",
+    "description": "A php package to extract different types of resources",
+    "keywords": [
+        "hedii",
+        "extractors"
+    ],
+    "homepage": "https://github.com/hedii/extractors",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hedi Chaibi",
+            "email": "hedi.chaibs@gmail.com",
+            "homepage": "http://hedichaibi.com"
+        }
+    ],
+    "require": {
+        "symfony/dom-crawler": "^3.0",
+        "symfony/css-selector": "^3.0",
+        "php" : "~5.6|~7.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hedii\\Extractors\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Hedii\\Extractors\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
