@@ -23,7 +23,7 @@ class ExtractorTest extends TestCase
         $method = $this->getPrivateMethod(Extractor::class, 'getDocument');
         $result = $method->invokeArgs($extractor, ['https://raw.githubusercontent.com/hedii/extractors/master/tests/example.txt']);
 
-        $this->assertEquals('example', $result);
+        $this->assertEquals('example', trim($result));
     }
 
     public function testSearchForMethodReturnsExtractorClassInstance()
