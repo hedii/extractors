@@ -4,6 +4,8 @@
 
 Extractor is a package that find targeted types of resources in html dom.
 Currently, only 2 types of resources are available: urls and emails.
+The found resources are returned as an array.
+
 The `Extractor` class can be extended to add more resources types.
 
 ### Install
