@@ -19,10 +19,26 @@ composer require hedii/extractors
 Currently, only 2 types of resources are available: urls and emails.
 
 ``` php
+// require composer autoloader
+require '/path/to/vendor/autoload.php';
+
+// instantiate 
 $extractor = new \Hedii\Extractors\Extractor();
-$urls = $extractor->searchFor(['urls'])->at('http://example.com')->get();
-$emails = $extractor->searchFor(['emails'])->at('http://example.com')->get();
-$urlsAndEmails = $extractor->searchFor(['urls', 'emails'])->at('http://example.com')->get();
+
+// get all the urls on example.com page dom
+$urls = $extractor->searchFor(['urls'])
+    ->at('http://example.com')
+    ->get();
+
+// get all the emails on example.com page dom
+$emails = $extractor->searchFor(['emails'])
+    ->at('http://example.com')
+    ->get();
+
+// get all the urls and emails on example.com page dom
+$urlsAndEmails = $extractor->searchFor(['urls', 'emails'])
+    ->at('http://example.com')
+    ->get();
 ```
 
 
