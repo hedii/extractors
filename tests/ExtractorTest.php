@@ -12,9 +12,11 @@ class ExtractorTest extends TestCase
         $method = $this->getPrivateMethod(Extractor::class, 'singular');
         $result1 = $method->invokeArgs($extractor, ['urls']);
         $result2 = $method->invokeArgs($extractor, ['emails']);
+        $result3 = $method->invokeArgs($extractor, ['telephones']);
 
         $this->assertEquals('url', $result1);
         $this->assertEquals('email', $result2);
+        $this->assertEquals('telephone', $result3);
     }
 
     public function testGetDocument()
@@ -61,6 +63,16 @@ class ExtractorTest extends TestCase
         $this->assertArrayHasKey('emails', $result);
         $this->assertTrue(!empty($result));
         $this->assertTrue(in_array('ton@email.com', $result['emails']));
+    }
+
+    public function testExtractorFindTelephones()
+    {
+        $extractor = new Extractor();
+        $result = $extractor->searchFor(['telephones'])->at('http://thatsthem.com/phone/818-795-8895')->get();
+
+        $this->assertArrayHasKey('telephones', $result);
+        $this->assertTrue(!empty($result));
+        $this->assertTrue(in_array('8187958895', $result['telephones']));
     }
 
     public function testExtractorFindEmailsAndUrls()
