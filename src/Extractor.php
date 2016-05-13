@@ -58,9 +58,9 @@ class Extractor
             ];
         }
 
-        if (in_array('telephone', $resourceTypes)) {
-            $this->resourcesMap['telephones'] = [
-                'extractor' => new TelephoneExtractor(),
+        if (in_array('phone', $resourceTypes)) {
+            $this->resourcesMap['phone'] = [
+                'extractor' => new PhoneExtractor(),
                 'resources' => null
             ];
         }
