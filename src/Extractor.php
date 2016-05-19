@@ -65,6 +65,13 @@ class Extractor
             ];
         }
 
+        if (in_array('meta', $resourceTypes)) {
+            $this->resourcesMap['meta'] = [
+                'extractor' => new MetaExtractor(),
+                'resources' => null
+            ];
+        }
+
         return $this;
     }
 
@@ -78,6 +85,20 @@ class Extractor
     {
         $this->url = $url;
         $this->dom = $this->getDocument($url);
+
+        return $this;
+    }
+
+    /**
+     * Set the target url as "empty" and get dom from parameter.
+     *
+     * @param string $dom
+     * @return $this
+     */
+    public function html($dom)
+    {
+        $this->url = 'http://';
+        $this->dom = $dom;
 
         return $this;
     }
