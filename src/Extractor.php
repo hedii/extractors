@@ -172,6 +172,26 @@ class Extractor
     }
 
     /**
+     * An helper that check if a string 'haystack' starts with
+     * a string 'needle'.
+     *
+     * @source laravel
+     * @param string $haystack
+     * @param string|array $needles
+     * @return bool
+     */
+    protected function startsWith($haystack, $needles)
+    {
+        foreach ((array) $needles as $needle) {
+            if ( (substr($haystack, 0, strlen($needle)) === $needle) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Reset the resources map and resources arrays.
      *
      * @return void
