@@ -28,23 +28,26 @@ class PhoneExtractor extends Extractor
         $crawler = new DomCrawler($dom, $url);
         $text = $crawler->filter('body')->text();
 
+        $phone_regex = "/(?:(?:\\(?(?:00|\\+)([1-4]\\d\\d|[1-9]\\d?)\\)?)?[\\-\\ \\\\\\/]?)?((?:\\(?\\d{1,}\\)?[\\-\\ \\\\\\/]?){0,})(?:[\\-\\ \\\\\\/]?(?:#|ext\\.?|extension|x)[\\-\\ \\\\\\/]?(\\d+))?/mi";
+
         // TODO: make so that it doesnt return empty strings initially
-        preg_match_all("/(?:(?:\\(?(?:00|\\+)([1-4]\\d\\d|[1-9]\\d?)\\)?)?[\\-\\.\\ \\\\\\/]?)?((?:\\(?\\d{1,}\\)?[\\-\\.\\ \\\\\\/]?){0,})(?:[\\-\\.\\ \\\\\\/]?(?:#|ext\\.?|extension|x)[\\-\\.\\ \\\\\\/]?(\\d+))?/mi", $text, $matches, PREG_SET_ORDER);
+        preg_match_all($phone_regex, $text, $matches, PREG_SET_ORDER);
 
-		$phone_delimiters = array(' ', '+', '(', ')', '-', '_', '/', '\\');
+        $phone_delimiters = array(' ', '+', '(', ')', '-', '_', '/', '\\');
 
-		if ($matches) {
-			foreach ($matches as $key => $match) {
-				$original = trim(isset($match[0])?$match[0]:'');
-				$country = str_replace($phone_delimiters, '', trim(isset($match[1])?$match[1]:''));
-				$number = str_replace($phone_delimiters, '', trim(isset($match[2])?$match[2]:''));
-				$ext = str_replace($phone_delimiters, '', trim(isset($match[3])?$match[3]:''));
-				$full_number = ( $country !== '' ? '+'.$country.' ' : '' ). $number . ( $ext !== '' ? ', '.$ext : '' );
-				if ( $number !== '' && trim($full_number) !== '' && strlen($number) > 7 ) {
-					$this->phones[] = $full_number;
-				}
-			}
-		}
+        if ($matches) {
+            foreach ($matches as $key => $match) {
+                $original = trim(isset($match[0])?$match[0]:'');
+                $country = str_replace($phone_delimiters, '', trim(isset($match[1])?$match[1]:''));
+                $number = str_replace($phone_delimiters, '', trim(isset($match[2])?$match[2]:''));
+                $ext = str_replace($phone_delimiters, '', trim(isset($match[3])?$match[3]:''));
+                $full_number = ( $country !== '' ? '+'.$country.' ' : '' ). $number . ( $ext !== '' ? ', '.$ext : '' );
+
+                if ( $number !== '' && trim($full_number) !== '' && strlen($number) > 7 ) {
+                    $this->phones[] = $full_number;
+                }
+            }
+        }
 
         return $this->phones;
     }
