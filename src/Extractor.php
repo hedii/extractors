@@ -81,24 +81,10 @@ class Extractor
      * @param string $url
      * @return $this
      */
-    public function at($url)
+    public function at($url,$dom)
     {
-        $this->url = $url;
-        $this->dom = $this->getDocument($url);
-
-        return $this;
-    }
-
-    /**
-     * Set the target url as "empty" and get dom from parameter.
-     *
-     * @param string $dom
-     * @return $this
-     */
-    public function html($dom)
-    {
-        $this->url = 'http://';
-        $this->dom = $dom;
+        $this->url = isset($url) && $url ? $url : 'http://null';
+        $this->dom = isset($dom) && $dom ? $dom : $this->getDocument($url);
 
         return $this;
     }

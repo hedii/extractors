@@ -28,7 +28,11 @@ class UrlExtractor extends Extractor
 
         foreach ($links as $link) {
             if (!in_array($link->getUri(), $this->urls)) {
-                $this->urls[] = $link->getUri();
+            	if ($this->url === 'http://null') {
+            		$this->urls[] = $link->getNode()->getAttribute('href');
+            	} else {
+            		$this->urls[] = $link->getUri();
+            	}
             }
         }
 
