@@ -49,6 +49,8 @@ class EmailExtractor extends Extractor
     {
         $this->resetEmails();
 
+        $emails = [];
+
         preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
 
         foreach ($matches[0] as $match) {
@@ -56,9 +58,12 @@ class EmailExtractor extends Extractor
                 if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
                     continue;
                 }
-                $this->emails[] = $match;
+                $emails[] = $match;
             }
         }
+
+        // Fitler empty and unique only
+        $this->emails = array_filter( array_unique( $emails ) );
 
         return $this->emails;
     }
