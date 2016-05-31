@@ -24,7 +24,7 @@ class UrlExtractor extends Extractor
     {
         $this->resetUrls();
         $crawler = new DomCrawler($dom, $url);
-        $links = $crawler->filter('body a')->links();
+        $links = $crawler->filter('body a')->count() > 0 ? $crawler->filter('body a')->links() : [];
 
         foreach ($links as $link) {
             if (!in_array($link->getUri(), $this->urls)) {

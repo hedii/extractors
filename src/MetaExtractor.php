@@ -25,9 +25,8 @@ class MetaExtractor extends Extractor
         $this->resetMeta();
 
         $crawler = new DomCrawler($dom, $url);
-        $text = $crawler->html();
+        $text = (string) ( $crawler->filter('head')->count() > 0 ? $crawler->filter('head')->html() : '' );
         $meta_data = [];
-
 
         preg_match('/<title>(.+)<\/title\>/Uims', $text, $matches);
         if ($matches) {

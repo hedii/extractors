@@ -27,7 +27,7 @@ class PhoneExtractor extends Extractor
         $that = $this;
 
         $crawler = new DomCrawler($dom, $url);
-        $text = $crawler->filter('body')->text();
+        $text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
 
         // First extract phone numbers from links with 'tel:' action
         $href_phones = $crawler->filter('a')->count() > 0 ? $crawler->filter('a')->each( function ($node) use ($that) {

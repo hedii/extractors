@@ -2,6 +2,8 @@
 
 namespace Hedii\Extractors;
 
+use Symfony\Component\DomCrawler\Crawler as DomCrawler;
+
 class EmailExtractor extends Extractor
 {
     /**
@@ -49,21 +51,39 @@ class EmailExtractor extends Extractor
     {
         $this->resetEmails();
 
-        $emails = [];
+        $that = $this;
 
-        preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
+        $crawler = new DomCrawler($dom, $url);
+        $text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
+
+        // First extract emails from links with 'mailto:' and 'mail:' action
+        $href_emails = $crawler->filter('body a')->count() > 0 ? $crawler->filter('body a')->each( function ($node) use ($that) {
+            $href = strtolower($node->attr('href'));
+            if ( $that->startsWith(strtolower($href), ['mailto:']) ) {
+                return trim(ltrim($href,'mailto:'));
+            }
+            else if ( $that->startsWith(strtolower($href), ['mail:']) ) {
+                return trim(ltrim($href,'mail:'));
+            }
+        }) : [];
+
+        $body_emails = [];
+
+        preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $text, $matches);
 
         foreach ($matches[0] as $match) {
             if (filter_var($match, FILTER_VALIDATE_EMAIL)) {
                 if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
                     continue;
                 }
-                $emails[] = $match;
+                $body_emails[] = strtolower(trim($match));
             }
         }
 
-        // Fitler empty and unique only
-        $this->emails = array_filter( array_unique( $emails ) );
+        // Join href emails with body found emails, also filter empty and unique only
+        $this->emails = array_filter( array_unique( array_merge($href_emails,$body_emails) ) );
+
+        var_dump($this->emails);
 
         return $this->emails;
     }
