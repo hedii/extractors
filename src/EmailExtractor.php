@@ -54,10 +54,10 @@ class EmailExtractor extends Extractor
         $that = $this;
 
         $crawler = new DomCrawler($dom, $url);
-        $text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
+        // $text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
 
         // First extract emails from links with 'mailto:' and 'mail:' action
-        $href_emails = $crawler->filter('body a')->count() > 0 ? $crawler->filter('body a')->each( function ($node) use ($that) {
+        $href_emails = $crawler->filter('a')->count() > 0 ? $crawler->filter('a')->each( function ($node) use ($that) {
             $href = strtolower($node->attr('href'));
             if ( $that->startsWith($href, ['mailto:']) || $that->startsWith($href, ['mail:']) || $that->startsWith($href, ['email:']) ) {
                 return $that->trimEmail($href);
@@ -71,7 +71,7 @@ class EmailExtractor extends Extractor
         preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
 
         foreach ($matches[0] as $match) {
-            if (filter_var($match, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($that->trimEmail($match), FILTER_VALIDATE_EMAIL)) {
                 if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
                     continue;
                 }
