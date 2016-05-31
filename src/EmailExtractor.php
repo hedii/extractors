@@ -83,8 +83,6 @@ class EmailExtractor extends Extractor
         // Join href emails with body found emails, also filter empty and unique only
         $this->emails = array_filter( array_unique( array_merge($href_emails,$body_emails) ) );
 
-        var_dump($this->emails);
-
         return $this->emails;
     }
 
