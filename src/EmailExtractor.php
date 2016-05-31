@@ -84,9 +84,6 @@ class EmailExtractor extends Extractor
         // Join href emails with body found emails, also filter empty and unique only
         $this->emails = array_values( array_filter( array_unique( array_merge($href_emails,$body_emails) ) ) );
 
-        var_dump($this->emails);
-
-
         return $this->emails;
     }
 
@@ -96,20 +93,20 @@ class EmailExtractor extends Extractor
      * @return void
      */
     private function trimEmail($str) {
-    	$str = strtolower($str);
-	    if ( $this->startsWith(trim($str), ['mailto:']) ) {
-	        $str = trim(str_replace('mailto:','',$str));
-	    }
-	    else if ( $this->startsWith(trim($str), ['mail:']) ) {
-	        $str = trim(str_replace('mail:','',$str));
-	    }
-	    else if ( $this->startsWith(trim($str), ['email:']) ) {
-	        $str = trim(str_replace('email:','',$str));
-	    }
+        $str = strtolower($str);
+        if ( $this->startsWith(trim($str), ['mailto:']) ) {
+            $str = trim(str_replace('mailto:','',$str));
+        }
+        else if ( $this->startsWith(trim($str), ['mail:']) ) {
+            $str = trim(str_replace('mail:','',$str));
+        }
+        else if ( $this->startsWith(trim($str), ['email:']) ) {
+            $str = trim(str_replace('email:','',$str));
+        }
 
-	    $str = trim(htmlentities(urldecode($str), ENT_QUOTES | ENT_IGNORE, "UTF-8"));
+        $str = trim(htmlentities(urldecode($str), ENT_QUOTES | ENT_IGNORE, "UTF-8"));
 
-	    return $str;
+        return $str;
     }
 
     /**
