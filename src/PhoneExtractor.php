@@ -62,7 +62,7 @@ class PhoneExtractor extends Extractor
         }
 
         // Join href phones with body found phones, also filter empty and unique only
-        $this->phones = array_filter( array_unique( array_merge($href_phones,$body_phones) ) );
+        $this->phones = array_values( array_filter( array_unique( array_merge(array_values($href_phones),array_values($body_phones)) ) ) );
 
         return $this->phones;
     }
