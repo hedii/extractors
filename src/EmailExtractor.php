@@ -60,7 +60,10 @@ class EmailExtractor extends Extractor
         $href_emails = $crawler->filter('a')->count() > 0 ? $crawler->filter('a')->each( function ($node) use ($that) {
             $href = strtolower($node->attr('href'));
             if ( $that->startsWith($href, ['mailto:']) || $that->startsWith($href, ['mail:']) || $that->startsWith($href, ['email:']) ) {
-                return $that->trimEmail($href);
+                $mail = $that->trimEmail($href);
+                $mail = explode('?',$mail)[0];
+                $mail = explode('&',$mail)[0];
+                return $mail;
             }
         }) : [];
 
