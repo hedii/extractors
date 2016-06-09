@@ -187,4 +187,5 @@ class Extractor
         $this->resourcesMap = [];
         $this->resources = [];
     }
+
 }

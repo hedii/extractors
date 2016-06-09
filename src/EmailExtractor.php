@@ -53,10 +53,14 @@ class EmailExtractor extends Extractor
 
         $that = $this;
 
-        $crawler = new DomCrawler($dom, $url);
-        // $text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
+        $email_regex = '/\b([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4})\b/m';
 
-        // First extract emails from links with 'mailto:' and 'mail:' action
+        $crawler = new DomCrawler($dom, $url);
+
+
+        // 1. Extract emails from links with 'mailto:' and 'mail:' action
+
+        // Crawl links for href emails
         $href_emails = $crawler->filter('a')->count() > 0 ? $crawler->filter('a')->each( function ($node) use ($that) {
             $href = strtolower($node->attr('href'));
             if ( $that->startsWith($href, ['mailto:']) || $that->startsWith($href, ['mail:']) || $that->startsWith($href, ['email:']) ) {
@@ -67,21 +71,47 @@ class EmailExtractor extends Extractor
             }
         }) : [];
 
+        // Cleanup found link emails
         $href_emails = array_values( array_filter( array_unique( $href_emails ) ) );
+
+
+        // 2. Extract emails from website html
 
         $body_emails = [];
 
-        preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
+        // Text we will be searching in
+        $search_text = $dom;
+        // $search_text = (string) ( $crawler->filter('body')->count() > 0 ? $crawler->filter('body')->text() : '' );
 
-        foreach ($matches[0] as $match) {
-            if (filter_var($that->trimEmail($match), FILTER_VALIDATE_EMAIL)) {
-                if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
-                    continue;
-                }
-                $body_emails[] = $that->trimEmail($match);
+        // Split text into smaller chunks
+        // $search_text_chunks = str_split($search_text,80000);
+
+        // for ($i=0; $i < count($search_text_chunks); $i++) {
+
+            // Regex match emails
+            try {
+                preg_match_all($email_regex, $search_text, $matches);
+                $regex_valid = true;
+            } catch (Exception $e) {
+                // echo $e->getMessage();
+                $regex_valid = false;
             }
-        }
 
+            // No regex errors returned
+            if (preg_last_error() === PREG_NO_ERROR && $regex_valid === true) {
+                foreach ($matches[0] as $match) {
+                    if (filter_var($that->trimEmail($match), FILTER_VALIDATE_EMAIL)) {
+                        if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
+                            continue;
+                        }
+                        $body_emails[] = $that->trimEmail($match);
+                    }
+                }
+            }
+
+        // }
+
+        // Cleanup found body emails
         $body_emails = array_values( array_filter( array_unique( $body_emails ) ) );
 
         // Join href emails with body found emails, also filter empty and unique only
