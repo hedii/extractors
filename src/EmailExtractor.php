@@ -65,9 +65,9 @@ class EmailExtractor extends Extractor
             $href = strtolower($node->attr('href'));
             if ( $that->startsWith($href, ['mailto:']) || $that->startsWith($href, ['mail:']) || $that->startsWith($href, ['email:']) ) {
                 $mail = $that->trimEmail($href);
-                $mail = explode('?',$mail)[0];
-                $mail = explode('&',$mail)[0];
-                return $mail;
+                if (filter_var($that->trimEmail($mail), FILTER_VALIDATE_EMAIL)) {
+                    return $mail;
+                }
             }
         }) : [];
 
@@ -136,7 +136,9 @@ class EmailExtractor extends Extractor
         else if ( $this->startsWith(trim($str), ['email:']) ) {
             $str = trim(str_replace('email:','',$str));
         }
-
+        $str = explode('?',$str)[0];
+        $str = explode('&',$str)[0];
+        $str = trim($str,'//');
         $str = trim(htmlentities(urldecode($str), ENT_QUOTES | ENT_IGNORE, "UTF-8"));
 
         return $str;
