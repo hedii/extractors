@@ -23,7 +23,7 @@ class ExtractorTest extends TestCase
     {
         $extractor = new Extractor();
         $method = $this->getPrivateMethod(Extractor::class, 'getDocument');
-        $result = $method->invokeArgs($extractor, ['https://raw.githubusercontent.com/hedii/extractors/master/tests/example.txt']);
+        $result = $method->invokeArgs($extractor, [$this->url('/example')]);
 
         $this->assertEquals('example', trim($result));
     }
@@ -47,53 +47,43 @@ class ExtractorTest extends TestCase
     public function testExtractorFindUrls()
     {
         $extractor = new Extractor();
-        $result = $extractor->searchFor(['urls'])->at('http://telecharger-videos-youtube.com/')->get();
+        $result = $extractor->searchFor(['urls'])->at($this->url('/links'))->get();
 
         $this->assertArrayHasKey('urls', $result);
         $this->assertTrue(!empty($result));
-        $this->assertTrue(in_array('http://telecharger-videos-youtube.com/faq', $result['urls']));
-        $this->assertTrue(in_array('http://telecharger-videos-youtube.com/faq#site-supportes', $result['urls']));
+        $this->assertTrue(in_array('http://example.com/link1', $result['urls']));
+        $this->assertTrue(in_array('http://example.com/link1', $result['urls']));
     }
 
     public function testExtractorFindEmails()
     {
         $extractor = new Extractor();
-        $result = $extractor->searchFor(['emails'])->at('http://telecharger-videos-youtube.com/')->get();
+        $result = $extractor->searchFor(['emails'])->at($this->url('/emails'))->get();
 
         $this->assertArrayHasKey('emails', $result);
         $this->assertTrue(!empty($result));
-        $this->assertTrue(in_array('ton@email.com', $result['emails']));
-    }
-
-    public function testExtractorFindPhones()
-    {
-        $extractor = new Extractor();
-        $result = $extractor->searchFor(['phones'])->at('http://thatsthem.com/phone/818-795-8895')->get();
-
-        $this->assertArrayHasKey('phones', $result);
-        $this->assertTrue(!empty($result));
-        $this->assertTrue(in_array('8187958895', $result['phones']));
+        $this->assertTrue(in_array('contact@example.com', $result['emails']));
     }
 
     public function testExtractorFindEmailsAndUrls()
     {
         $extractor = new Extractor();
-        $result = $extractor->searchFor(['urls', 'emails'])->at('http://telecharger-videos-youtube.com/')->get();
+        $result = $extractor->searchFor(['urls', 'emails'])->at($this->url('/emails'))->get();
 
         $this->assertArrayHasKey('urls', $result);
         $this->assertTrue(!empty($result));
-        $this->assertTrue(in_array('http://telecharger-videos-youtube.com/faq', $result['urls']));
-        $this->assertTrue(in_array('http://telecharger-videos-youtube.com/faq#site-supportes', $result['urls']));
+        $this->assertTrue(in_array('http://example.com/link1', $result['urls']));
+        $this->assertTrue(in_array('http://example.com/link2', $result['urls']));
         $this->assertArrayHasKey('emails', $result);
         $this->assertTrue(!empty($result));
-        $this->assertTrue(in_array('ton@email.com', $result['emails']));
+        $this->assertTrue(in_array('contact@example.com', $result['emails']));
     }
 
     public function testResetMethod()
     {
         $extractor = new Extractor();
-        $extractor->searchFor(['urls'])->at('http://telecharger-videos-youtube.com/')->get();
-        $result = $extractor->searchFor(['emails'])->at('http://telecharger-videos-youtube.com/')->get();
+        $extractor->searchFor(['urls'])->at($this->url('/emails'))->get();
+        $result = $extractor->searchFor(['emails'])->at($this->url('/emails'))->get();
 
         $this->assertArrayNotHasKey('urls', $result);
     }

@@ -8,10 +8,10 @@ class EmailExtractorTest extends TestCase
 {
     public function testExtract()
     {
-        $dom = file_get_contents('http://telecharger-videos-youtube.com/');
+        $dom = file_get_contents($this->url('/emails'));
         $extractor = new EmailExtractor();
-        $result = $extractor->extract($dom, 'http://telecharger-videos-youtube.com/');
+        $result = $extractor->extract($dom, $this->url('/emails'));
 
-        $this->assertArraySubset(['ton@email.com'], $result);
+        $this->assertArraySubset(['contact@example.com'], $result);
     }
 }
