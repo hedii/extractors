@@ -49,7 +49,7 @@ class EmailExtractor extends Extractor
     {
         $this->resetEmails();
 
-        preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+@[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
+        preg_match_all('/[a-z\d._%+-]+[a-z\d._%+-]+(@|&#064;)[a-z\d.-]+\.[a-z]{2,4}\b/i', $dom, $matches);
 
         foreach ($matches[0] as $match) {
             if (filter_var($match, FILTER_VALIDATE_EMAIL)) {
@@ -57,6 +57,14 @@ class EmailExtractor extends Extractor
                     continue;
                 }
                 $this->emails[] = $match;
+            }elseif (strpos($match, '&#064;') !== false) {
+                $match = str_replace('&#064;', '@', $match);
+                if (filter_var($match, FILTER_VALIDATE_EMAIL)) {
+                    if ($this->endsWith(strtolower($match), $this->mediaExtensions)) {
+                        continue;
+                    }
+                    $this->emails[] = $match;
+                }
             }
         }
 
